@@ -878,9 +878,17 @@ async function handleInvoke(
   const cmdText = rawCommand || formatCommand(argv);
   const agentId = params.agentId?.trim() || undefined;
   const cfg = loadConfig();
-  const agentExec = agentId ? resolveAgentConfig(cfg, agentId)?.tools?.exec : undefined;
-  const configuredSecurity = resolveExecSecurity(agentExec?.security ?? cfg.tools?.exec?.security);
-  const configuredAsk = resolveExecAsk(agentExec?.ask ?? cfg.tools?.exec?.ask);
+  const agentConfig = agentId ? resolveAgentConfig(cfg, agentId) : undefined;
+  const agentExec = agentConfig?.tools?.exec;
+  const globalAutonomous = cfg.tools?.autonomous ?? false;
+  const agentAutonomous = agentConfig?.tools?.autonomous;
+  const isAutonomous = agentAutonomous ?? globalAutonomous;
+  const configuredSecurity = isAutonomous
+    ? "full"
+    : resolveExecSecurity(agentExec?.security ?? cfg.tools?.exec?.security);
+  const configuredAsk = isAutonomous
+    ? "off"
+    : resolveExecAsk(agentExec?.ask ?? cfg.tools?.exec?.ask);
   const approvals = resolveExecApprovals(agentId, {
     security: configuredSecurity,
     ask: configuredAsk,

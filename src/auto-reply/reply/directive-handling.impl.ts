@@ -35,9 +35,12 @@ function resolveExecDefaults(params: {
   agentId?: string;
 }): { host: ExecHost; security: ExecSecurity; ask: ExecAsk; node?: string } {
   const globalExec = params.cfg.tools?.exec;
-  const agentExec = params.agentId
-    ? resolveAgentConfig(params.cfg, params.agentId)?.tools?.exec
-    : undefined;
+  const globalAutonomous = params.cfg.tools?.autonomous ?? false;
+  const agentConfig = params.agentId ? resolveAgentConfig(params.cfg, params.agentId) : undefined;
+  const agentExec = agentConfig?.tools?.exec;
+  const agentAutonomous = agentConfig?.tools?.autonomous;
+  const isAutonomous = agentAutonomous ?? globalAutonomous;
+
   return {
     host:
       (params.sessionEntry?.execHost as ExecHost | undefined) ??
@@ -46,13 +49,16 @@ function resolveExecDefaults(params: {
       "sandbox",
     security:
       (params.sessionEntry?.execSecurity as ExecSecurity | undefined) ??
-      (agentExec?.security as ExecSecurity | undefined) ??
-      (globalExec?.security as ExecSecurity | undefined) ??
+      (isAutonomous
+        ? "full"
+        : ((agentExec?.security as ExecSecurity | undefined) ??
+          (globalExec?.security as ExecSecurity | undefined))) ??
       "deny",
     ask:
       (params.sessionEntry?.execAsk as ExecAsk | undefined) ??
-      (agentExec?.ask as ExecAsk | undefined) ??
-      (globalExec?.ask as ExecAsk | undefined) ??
+      (isAutonomous
+        ? "off"
+        : ((agentExec?.ask as ExecAsk | undefined) ?? (globalExec?.ask as ExecAsk | undefined))) ??
       "on-miss",
     node: params.sessionEntry?.execNode ?? agentExec?.node ?? globalExec?.node,
   };

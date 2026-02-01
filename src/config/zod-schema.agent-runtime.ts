@@ -251,6 +251,7 @@ export const AgentSandboxSchema = z
 
 export const AgentToolsSchema = z
   .object({
+    autonomous: z.boolean().optional(),
     profile: ToolProfileSchema,
     allow: z.array(z.string()).optional(),
     alsoAllow: z.array(z.string()).optional(),
@@ -456,6 +457,7 @@ export const AgentEntrySchema = z
 
 export const ToolsSchema = z
   .object({
+    autonomous: z.boolean().optional(),
     profile: ToolProfileSchema,
     allow: z.array(z.string()).optional(),
     alsoAllow: z.array(z.string()).optional(),

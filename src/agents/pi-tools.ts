@@ -13,6 +13,7 @@ import { logWarn } from "../logger.js";
 import { getPluginToolMeta } from "../plugins/tools.js";
 import { isSubagentSessionKey } from "../routing/session-key.js";
 import { resolveGatewayMessageChannel } from "../utils/message-channel.js";
+import { resolveAgentConfig } from "./agent-scope.js";
 import { createApplyPatchTool } from "./apply-patch.js";
 import {
   createExecTool,
@@ -84,12 +85,19 @@ function isApplyPatchAllowedForModel(params: {
   });
 }
 
-function resolveExecConfig(cfg: OpenClawConfig | undefined) {
+function resolveExecConfig(
+  cfg: OpenClawConfig | undefined,
+  agentTools?: { autonomous?: boolean; exec?: { security?: string; ask?: string } },
+) {
   const globalExec = cfg?.tools?.exec;
+  const globalAutonomous = cfg?.tools?.autonomous ?? false;
+  const agentAutonomous = agentTools?.autonomous;
+  const isAutonomous = agentAutonomous ?? globalAutonomous;
+
   return {
     host: globalExec?.host,
-    security: globalExec?.security,
-    ask: globalExec?.ask,
+    security: isAutonomous ? "full" : globalExec?.security,
+    ask: isAutonomous ? "off" : globalExec?.ask,
     node: globalExec?.node,
     pathPrepend: globalExec?.pathPrepend,
     safeBins: globalExec?.safeBins,
@@ -220,7 +228,9 @@ export function createOpenClawCodingTools(options?: {
     sandbox?.tools,
     subagentPolicy,
   ]);
-  const execConfig = resolveExecConfig(options?.config);
+  const agentConfig =
+    agentId && options?.config ? resolveAgentConfig(options.config, agentId) : undefined;
+  const execConfig = resolveExecConfig(options?.config, agentConfig?.tools);
   const sandboxRoot = sandbox?.workspaceDir;
   const allowWorkspaceWrites = sandbox?.workspaceAccess !== "ro";
   const workspaceRoot = options?.workspaceDir ?? process.cwd();

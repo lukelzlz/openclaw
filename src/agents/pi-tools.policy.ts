@@ -239,7 +239,12 @@ export function resolveEffectiveToolPolicy(params: {
   const agentTools = agentConfig?.tools;
   const globalTools = params.config?.tools;
 
-  const profile = agentTools?.profile ?? globalTools?.profile;
+  const globalAutonomous = globalTools?.autonomous ?? false;
+  const agentAutonomous = agentTools?.autonomous;
+  const isAutonomous = agentAutonomous ?? globalAutonomous;
+
+  // When autonomous, force profile to "full" (allow all tools)
+  const profile = isAutonomous ? "full" : (agentTools?.profile ?? globalTools?.profile);
   const providerPolicy = resolveProviderToolPolicy({
     byProvider: globalTools?.byProvider,
     modelProvider: params.modelProvider,

@@ -124,6 +124,7 @@ const FIELD_LABELS: Record<string, string> = {
   "diagnostics.cacheTrace.includePrompt": "Cache Trace Include Prompt",
   "diagnostics.cacheTrace.includeSystem": "Cache Trace Include System",
   "agents.list.*.identity.avatar": "Identity Avatar",
+  "agents.list.*.tools.autonomous": "Agent Autonomous Mode",
   "gateway.remote.url": "Remote Gateway URL",
   "gateway.remote.sshTarget": "Remote Gateway SSH Target",
   "gateway.remote.sshIdentity": "Remote Gateway SSH Identity",
@@ -164,6 +165,7 @@ const FIELD_LABELS: Record<string, string> = {
   "tools.links.timeoutSeconds": "Link Understanding Timeout (sec)",
   "tools.links.models": "Link Understanding Models",
   "tools.links.scope": "Link Understanding Scope",
+  "tools.autonomous": "Autonomous Mode",
   "tools.profile": "Tool Profile",
   "tools.alsoAllow": "Tool Allowlist Additions",
   "agents.list[].tools.profile": "Agent Tool Profile",
@@ -379,6 +381,8 @@ const FIELD_HELP: Record<string, string> = {
   "gateway.remote.sshIdentity": "Optional SSH identity file path (passed to ssh -i).",
   "agents.list[].identity.avatar":
     "Avatar image path (relative to the agent workspace only) or a remote URL/data URL.",
+  "agents.list.*.tools.autonomous":
+    "Agent-level autonomous mode override (takes precedence over global tools.autonomous).",
   "discovery.mdns.mode":
     'mDNS broadcast mode ("minimal" default, "full" includes cliPath/sshPort, "off" disables mDNS).',
   "gateway.auth.token":
@@ -414,6 +418,8 @@ const FIELD_HELP: Record<string, string> = {
     "Include full message payloads in trace output (default: true).",
   "diagnostics.cacheTrace.includePrompt": "Include prompt text in trace output (default: true).",
   "diagnostics.cacheTrace.includeSystem": "Include system prompt in trace output (default: true).",
+  "tools.autonomous":
+    "Enable autonomous mode: full tool access, no approvals, full exec security (overrides tools.profile, tools.exec.ask, tools.exec.security).",
   "tools.exec.applyPatch.enabled":
     "Experimental. Enables apply_patch for OpenAI models when allowed by tool policy.",
   "tools.exec.applyPatch.allowModels":

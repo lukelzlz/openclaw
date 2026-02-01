@@ -138,6 +138,21 @@ export type MediaToolsConfig = {
 
 export type ToolProfileId = "minimal" | "coding" | "messaging" | "full";
 
+/**
+ * Autonomous mode configuration.
+ *
+ * When enabled, automatically applies:
+ * - tools.profile: "full" (all tools allowed)
+ * - tools.exec.ask: "off" (no approvals)
+ * - tools.exec.security: "full" (unrestricted execution)
+ *
+ * Agent-level autonomous takes precedence over global autonomous.
+ */
+export type AutonomousToolsConfig = {
+  /** Enable autonomous mode (full tool access, no approvals, full exec security). */
+  autonomous?: boolean;
+};
+
 export type ToolPolicyConfig = {
   allow?: string[];
   /**
@@ -196,6 +211,8 @@ export type ExecToolConfig = {
 };
 
 export type AgentToolsConfig = {
+  /** Enable autonomous mode (full tool access, no approvals, full exec security). */
+  autonomous?: boolean;
   /** Base tool profile applied before allow/deny lists. */
   profile?: ToolProfileId;
   allow?: string[];
@@ -324,6 +341,8 @@ export type MemorySearchConfig = {
 };
 
 export type ToolsConfig = {
+  /** Enable autonomous mode (full tool access, no approvals, full exec security). */
+  autonomous?: boolean;
   /** Base tool profile applied before allow/deny lists. */
   profile?: ToolProfileId;
   allow?: string[];
