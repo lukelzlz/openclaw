@@ -1,0 +1,19 @@
+# workflow-sanity.yml
+
+# This is a sanity check workflow that runs tests on merges to main branch.
+name: Sanity Check
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  sanity:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Run tests
+      run: |
+        echo "Running tests..."
+        # Add your test commands here
